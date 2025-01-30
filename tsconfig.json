@@ -1,21 +1,57 @@
 {
   "compilerOptions": {
+    // Type Checking
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    // "alwaysStrict": true, // true if strict
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    // "noImplicitAny": true, // true if strict
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    // "noImplicitThis": true, // true if strict
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+    // "strictBindCallApply": true, // true if strict
+    // "strictBuiltinIteratorReturn": true, // true if strict
+    // "strictFunctionTypes": true, // true if strict
+    // "strictNullChecks": true, // true if strict
+    // "strictPropertyInitialization": true, // true if strict
+    // "useUnknownInCatchVariables": true, // true if strict
+
+    // Modules
+    "baseUrl": "./",
     "module": "commonjs",
+    "typeRoots": [
+      "node_modules/@types",
+      ".src/types"
+    ],
+
+    // Emit
     "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
     "removeComments": true,
+    "sourceMap": true,
+
+    // Interop Constraints
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Language and Environment
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "target": "ES2021",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
+
+    // Projects
     "incremental": true,
+
+    // Completeness
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "strictBindCallApply": false
   }
 }
