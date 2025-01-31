@@ -4,7 +4,7 @@ import {
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
-import { UsuarioRepository } from 'src/repositories/usuario.repository';
+import { UsuarioRepository } from '../repositories/usuario.repository';
 
 @Entity({ repository: () => UsuarioRepository })
 export class Usuario {
