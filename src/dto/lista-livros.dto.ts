@@ -1,4 +1,4 @@
-export class ListaLivroDto {
+export class ListaLivrosDto {
   constructor(
     readonly titulo: string,
     readonly autor: string,
