@@ -41,6 +41,7 @@ export class LivroService {
             livro.autor,
             livro.anoPublicacao,
             livro.disponivel,
+            livro.idsUsuarios,
           ),
       );
       return lista;
@@ -72,6 +73,26 @@ export class LivroService {
       throw new NotFoundException();
     }
     await this.livroRepository.nativeDelete(id);
+    return livro;
+  }
+
+  async emprestaLivros(idUsuario: number, id: number) {
+    const livro = await this.livroRepository.findOne(id);
+    if (!livro) {
+      throw new NotFoundException();
+    }
+    livro.disponivel = false;
+    livro.idsUsuarios = idUsuario;
+    return livro;
+  }
+
+  async devolveLivro(id: number) {
+    const livro = await this.livroRepository.findOne(id);
+    if (!livro) {
+      throw new NotFoundException();
+    }
+    livro.disponivel = true;
+    livro.idsUsuarios = 0;
     return livro;
   }
 }

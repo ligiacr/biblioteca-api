@@ -11,4 +11,6 @@ export class CriaLivroDto {
   anoPublicacao!: number;
   @IsBoolean()
   disponivel!: boolean;
+  @IsInt()
+  idsUsuarios?: number;
 }
