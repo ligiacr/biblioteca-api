@@ -51,12 +51,12 @@ export class UsuarioService {
     return usuario;
   }
 
-  async atualizaUsuario(id: number, listaUsuarioDto: ListaUsuariosDto) {
+  async atualizaUsuario(id: number, criaUsuarioDto: CriaUsuarioDto) {
     const usuario = await this.usuarioRepository.findOne(id);
     if (!usuario) {
       throw new NotFoundException();
     }
-    wrap(usuario).assign(listaUsuarioDto);
+    wrap(usuario).assign(criaUsuarioDto);
     await this.em.flush();
     return usuario;
   }

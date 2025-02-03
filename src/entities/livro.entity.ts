@@ -23,5 +23,5 @@ export class Livro {
   @Property()
   disponivel!: boolean;
   @ManyToMany({ entity: () => Usuario, nullable: true, owner: true })
-  idsUsuarios!: number;
+  idUsuario?: number;
 }

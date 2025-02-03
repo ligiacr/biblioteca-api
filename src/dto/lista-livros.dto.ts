@@ -4,6 +4,6 @@ export class ListaLivrosDto {
     readonly autor: string,
     readonly anoPublicacao: number,
     readonly disponivel: boolean,
-    readonly idsUsuarios: number,
+    readonly idUsuario?: number,
   ) {}
 }

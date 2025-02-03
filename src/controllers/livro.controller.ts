@@ -9,7 +9,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { CriaLivroDto } from 'src/dto/cria-livro.dto';
-import { ListaLivrosDto } from 'src/dto/lista-livros.dto';
 import { LivroService } from 'src/services/livro.service';
 
 @Controller('livros')
@@ -34,9 +33,9 @@ export class LivroController {
   @Put(':id')
   async atualizaLivro(
     @Param('id', ParseIntPipe) id: number,
-    @Body() livro: ListaLivrosDto,
+    @Body() criaLivroDto: CriaLivroDto,
   ) {
-    return this.livroService.atualizaLivro(id, livro);
+    return this.livroService.atualizaLivro(id, criaLivroDto);
   }
 
   @Delete(':id')
@@ -49,7 +48,7 @@ export class LivroController {
     @Param('idUsuario', ParseIntPipe) idUsuario: number,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    return this.livroService.emprestaLivros(idUsuario, id);
+    return this.livroService.emprestaLivro(idUsuario, id);
   }
 
   @Post('/devolver/:id')

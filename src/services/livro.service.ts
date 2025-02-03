@@ -41,7 +41,7 @@ export class LivroService {
             livro.autor,
             livro.anoPublicacao,
             livro.disponivel,
-            livro.idsUsuarios,
+            livro.idUsuario,
           ),
       );
       return lista;
@@ -57,12 +57,12 @@ export class LivroService {
     return livro;
   }
 
-  async atualizaLivro(id: number, livroDto: ListaLivrosDto) {
+  async atualizaLivro(id: number, criaLivroDto: CriaLivroDto) {
     const livro = await this.livroRepository.findOne(id);
     if (!livro) {
       throw new NotFoundException();
     }
-    wrap(livro).assign(livroDto);
+    wrap(livro).assign(criaLivroDto);
     await this.em.flush();
     return livro;
   }
@@ -76,13 +76,13 @@ export class LivroService {
     return livro;
   }
 
-  async emprestaLivros(idUsuario: number, id: number) {
+  async emprestaLivro(idUsuario: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
     if (!livro) {
       throw new NotFoundException();
     }
     livro.disponivel = false;
-    livro.idsUsuarios = idUsuario;
+    livro.idUsuario = idUsuario;
     return livro;
   }
 
@@ -92,7 +92,7 @@ export class LivroService {
       throw new NotFoundException();
     }
     livro.disponivel = true;
-    livro.idsUsuarios = 0;
+    livro.idUsuario = 0;
     return livro;
   }
 }
