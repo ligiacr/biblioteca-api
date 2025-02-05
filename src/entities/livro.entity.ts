@@ -23,6 +23,8 @@ export class Livro {
   anoPublicacao!: number;
   @Property()
   disponivel!: boolean;
+  @Property()
+  estoque!: number;
   @ManyToMany(() => Usuario)
   usuarios: Collection<Usuario> = new Collection<Usuario>(this);
 }

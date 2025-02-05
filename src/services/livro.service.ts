@@ -22,6 +22,7 @@ export class LivroService {
 
   async criaLivro(criaLivroDto: CriaLivroDto): Promise<Livro | null> {
     const livro = new Livro();
+
     wrap(livro).assign(criaLivroDto);
     const existe = (await this.livroRepository.findAll()).filter(
       (livro) => livro.id === criaLivroDto.id,
@@ -37,6 +38,7 @@ export class LivroService {
 
   async listaLivros() {
     const livros = await this.livroRepository.findAll();
+
     if (livros.length > 0) {
       const lista = livros.map(
         (livro) =>
@@ -45,8 +47,11 @@ export class LivroService {
             livro.autor,
             livro.anoPublicacao,
             livro.disponivel,
+            livro.estoque,
+            livro.usuarios,
           ),
       );
+      await Promise.all(livros.map((livro) => livro.usuarios.init()));
       return lista;
     }
     throw new NotFoundException();
@@ -54,6 +59,7 @@ export class LivroService {
 
   async buscaLivroPorId(id: number): Promise<Livro | null> {
     const livro = await this.livroRepository.findOne(id);
+
     if (!livro) {
       throw new NotFoundException();
     }
@@ -62,6 +68,7 @@ export class LivroService {
 
   async atualizaLivro(id: number, criaLivroDto: CriaLivroDto) {
     const livro = await this.livroRepository.findOne(id);
+
     if (!livro) {
       throw new NotFoundException();
     }
@@ -72,6 +79,7 @@ export class LivroService {
 
   async excluiLivro(id: number) {
     const livro = await this.livroRepository.findOne(id);
+
     if (!livro) {
       throw new NotFoundException();
     }
@@ -81,29 +89,48 @@ export class LivroService {
 
   async emprestaLivro(usuarioId: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
-    if (!livro) {
+    const usuario = await this.usuarioRepository.findOne(usuarioId);
+
+    if (!livro || !usuario) {
       throw new NotFoundException();
     }
     await livro?.usuarios.init();
-    livro.disponivel = false;
-    const usuario = await this.usuarioRepository.findOne(usuarioId);
-    if (usuario !== null) {
-      livro.usuarios.add(usuario);
-      await this.em.flush();
+
+    if (
+      livro.disponivel &&
+      livro.estoque > 0 &&
+      !livro.usuarios.contains(usuario)
+    ) {
+      livro.estoque -= 1;
+    } else {
+      throw new BadRequestException();
     }
+
+    livro.usuarios.add(usuario);
+    if (livro.estoque === 0) {
+      livro.disponivel = false;
+    }
+    await livro?.usuarios.init();
+    await this.em.flush();
+
     return livro;
   }
 
   async devolveLivro(usuarioId: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
-    if (!livro) {
+    const usuario = await this.usuarioRepository.findOne(usuarioId);
+
+    if (!livro || !usuario) {
       throw new NotFoundException();
     }
     await livro?.usuarios.init();
-    livro.disponivel = true;
-    const usuario = await this.usuarioRepository.findOne(usuarioId);
-    livro.usuarios.remove(usuario!);
 
+    if (!livro.usuarios.contains(usuario)) {
+      throw new BadRequestException();
+    }
+    livro.usuarios.remove(usuario);
+    livro.estoque += 1;
+    livro.disponivel = true;
     await this.em.flush();
     return livro;
   }

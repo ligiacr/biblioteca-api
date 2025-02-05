@@ -52,6 +52,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "boolean"
+        },
+        "estoque": {
+          "name": "estoque",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
         }
       },
       "name": "livro",

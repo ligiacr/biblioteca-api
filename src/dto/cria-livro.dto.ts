@@ -13,6 +13,8 @@ export class CriaLivroDto {
   anoPublicacao!: number;
   @IsBoolean()
   disponivel!: boolean;
+  @IsInt({ message: 'O estoque deve ser um número' })
+  estoque!: number;
   @IsOptional()
   usuarios = new Collection<Usuario>(this);
 }
