@@ -84,12 +84,11 @@ export class LivroService {
     if (!livro) {
       throw new NotFoundException();
     }
+    await livro?.usuarios.init();
     livro.disponivel = false;
     const usuario = await this.usuarioRepository.findOne(usuarioId);
     if (usuario !== null) {
       livro.usuarios.add(usuario);
-      //livro.usuarios.hydrate(usuario);
-      //livro.usuarios.populated();
       await this.em.flush();
     }
     return livro;
@@ -97,10 +96,10 @@ export class LivroService {
 
   async devolveLivro(usuarioId: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
-    await livro?.usuarios.init();
     if (!livro) {
       throw new NotFoundException();
     }
+    await livro?.usuarios.init();
     livro.disponivel = true;
     const usuario = await this.usuarioRepository.findOne(usuarioId);
     livro.usuarios.remove(usuario!);
