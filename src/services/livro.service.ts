@@ -4,15 +4,19 @@ import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { ListaLivrosDto } from 'src/dto/lista-livros.dto';
 import { Livro } from 'src/entities/livro.entity';
+import { Usuario } from 'src/entities/usuario.entity';
 import { BadRequestException } from 'src/exceptions/bad-request.exception';
 import { NotFoundException } from 'src/exceptions/not-found.exception';
 import { LivroRepository } from 'src/repositories/livro.repository';
+import { UsuarioRepository } from 'src/repositories/usuario.repository';
 
 @Injectable()
 export class LivroService {
   constructor(
     @InjectRepository(Livro)
     private readonly livroRepository: LivroRepository,
+    @InjectRepository(Usuario)
+    private readonly usuarioRepository: UsuarioRepository,
     private readonly em: EntityManager,
   ) {}
 
@@ -41,7 +45,6 @@ export class LivroService {
             livro.autor,
             livro.anoPublicacao,
             livro.disponivel,
-            livro.idUsuario,
           ),
       );
       return lista;
@@ -76,23 +79,33 @@ export class LivroService {
     return livro;
   }
 
-  async emprestaLivro(idUsuario: number, id: number) {
+  async emprestaLivro(usuarioId: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
     if (!livro) {
       throw new NotFoundException();
     }
     livro.disponivel = false;
-    livro.idUsuario = idUsuario;
+    const usuario = await this.usuarioRepository.findOne(usuarioId);
+    if (usuario !== null) {
+      livro.usuarios.add(usuario);
+      //livro.usuarios.hydrate(usuario);
+      //livro.usuarios.populated();
+      await this.em.flush();
+    }
     return livro;
   }
 
-  async devolveLivro(id: number) {
+  async devolveLivro(usuarioId: number, id: number) {
     const livro = await this.livroRepository.findOne(id);
+    await livro?.usuarios.init();
     if (!livro) {
       throw new NotFoundException();
     }
     livro.disponivel = true;
-    livro.idUsuario = 0;
+    const usuario = await this.usuarioRepository.findOne(usuarioId);
+    livro.usuarios.remove(usuario!);
+
+    await this.em.flush();
     return livro;
   }
 }

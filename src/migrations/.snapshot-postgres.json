@@ -153,11 +153,11 @@
           "mappedType": "integer"
         }
       },
-      "name": "livro_id_usuario",
+      "name": "livro_usuarios",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "livro_id_usuario_pkey",
+          "keyName": "livro_usuarios_pkey",
           "columnNames": [
             "livro_id",
             "usuario_id"
@@ -170,12 +170,12 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "livro_id_usuario_livro_id_foreign": {
-          "constraintName": "livro_id_usuario_livro_id_foreign",
+        "livro_usuarios_livro_id_foreign": {
+          "constraintName": "livro_usuarios_livro_id_foreign",
           "columnNames": [
             "livro_id"
           ],
-          "localTableName": "public.livro_id_usuario",
+          "localTableName": "public.livro_usuarios",
           "referencedColumnNames": [
             "id"
           ],
@@ -183,12 +183,12 @@
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "livro_id_usuario_usuario_id_foreign": {
-          "constraintName": "livro_id_usuario_usuario_id_foreign",
+        "livro_usuarios_usuario_id_foreign": {
+          "constraintName": "livro_usuarios_usuario_id_foreign",
           "columnNames": [
             "usuario_id"
           ],
-          "localTableName": "public.livro_id_usuario",
+          "localTableName": "public.livro_usuarios",
           "referencedColumnNames": [
             "id"
           ],

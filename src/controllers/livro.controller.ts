@@ -51,8 +51,11 @@ export class LivroController {
     return this.livroService.emprestaLivro(idUsuario, id);
   }
 
-  @Post('/devolver/:id')
-  async devolveLivro(@Param('id', ParseIntPipe) id: number) {
-    return this.livroService.devolveLivro(id);
+  @Post('/devolver/:idUsuario/:id')
+  async devolveLivro(
+    @Param('idUsuario', ParseIntPipe) idUsuario: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.livroService.devolveLivro(idUsuario, id);
   }
 }

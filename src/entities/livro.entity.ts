@@ -1,4 +1,5 @@
 import {
+  Collection,
   Entity,
   EntityRepositoryType,
   ManyToMany,
@@ -22,6 +23,6 @@ export class Livro {
   anoPublicacao!: number;
   @Property()
   disponivel!: boolean;
-  @ManyToMany({ entity: () => Usuario, nullable: true, owner: true })
-  idUsuario?: number;
+  @ManyToMany(() => Usuario)
+  usuarios: Collection<Usuario> = new Collection<Usuario>(this);
 }

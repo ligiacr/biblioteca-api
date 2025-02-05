@@ -1,4 +1,6 @@
+import { Collection } from '@mikro-orm/core';
 import { IsInt, IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
+import { Usuario } from 'src/entities/usuario.entity';
 
 export class CriaLivroDto {
   @IsInt()
@@ -12,5 +14,5 @@ export class CriaLivroDto {
   @IsBoolean()
   disponivel!: boolean;
   @IsOptional()
-  idUsuario?: number;
+  usuarios = new Collection<Usuario>(this);
 }

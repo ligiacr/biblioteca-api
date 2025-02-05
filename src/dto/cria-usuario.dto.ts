@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CriaUsuarioDto {
   @IsInt({ message: 'O id deve ser um número' })
@@ -17,6 +11,4 @@ export class CriaUsuarioDto {
   @IsNotEmpty({ message: 'O telefone não pode ser vazio' })
   @MinLength(10, { message: 'O telefone deve ter no mínimo 10 dígitos' })
   telefone!: string;
-  @IsOptional()
-  idLivro?: number;
 }
