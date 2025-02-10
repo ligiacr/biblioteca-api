@@ -2,22 +2,22 @@ import { CriaLivroDto } from './../dto/cria-livro.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
-import { ListaLivrosDto } from 'src/dto/lista-livros.dto';
-import { Livro } from 'src/entities/livro.entity';
-import { Usuario } from 'src/entities/usuario.entity';
-import { BadRequestException } from 'src/exceptions/bad-request.exception';
-import { NotFoundException } from 'src/exceptions/not-found.exception';
-import { LivroRepository } from 'src/repositories/livro.repository';
-import { UsuarioRepository } from 'src/repositories/usuario.repository';
+import { ListaLivrosDto } from '../dto/lista-livros.dto';
+import { Livro } from '../entities/livro.entity';
+import { BadRequestException } from '../exceptions/bad-request.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
+import { LivroRepository } from '../repositories/livro.repository';
+import { UsuarioRepository } from '../repositories/usuario.repository';
+import { Usuario } from '../entities/usuario.entity';
 
 @Injectable()
 export class LivroService {
   constructor(
     @InjectRepository(Livro)
-    private readonly livroRepository: LivroRepository,
+    private livroRepository: LivroRepository,
     @InjectRepository(Usuario)
-    private readonly usuarioRepository: UsuarioRepository,
-    private readonly em: EntityManager,
+    private usuarioRepository: UsuarioRepository,
+    private em: EntityManager,
   ) {}
 
   async criaLivro(criaLivroDto: CriaLivroDto): Promise<Livro | null> {
@@ -40,17 +40,16 @@ export class LivroService {
     const livros = await this.livroRepository.findAll();
 
     if (livros.length > 0) {
-      const lista = livros.map(
-        (livro) =>
-          new ListaLivrosDto(
-            livro.titulo,
-            livro.autor,
-            livro.anoPublicacao,
-            livro.disponivel,
-            livro.estoque,
-            livro.usuarios,
-          ),
-      );
+      const lista = livros.map((livro) => [
+        {
+          titulo: livro.titulo,
+          autor: livro.autor,
+          anoPublicacao: livro.anoPublicacao,
+          disponivel: livro.disponivel,
+          estoque: livro.estoque,
+          usuarios: livro.usuarios,
+        },
+      ]);
       await Promise.all(livros.map((livro) => livro.usuarios.init()));
       return lista;
     }
@@ -66,13 +65,13 @@ export class LivroService {
     return livro;
   }
 
-  async atualizaLivro(id: number, criaLivroDto: CriaLivroDto) {
+  async atualizaLivro(id: number, listaLivrosDto: ListaLivrosDto) {
     const livro = await this.livroRepository.findOne(id);
 
     if (!livro) {
       throw new NotFoundException();
     }
-    wrap(livro).assign(criaLivroDto);
+    wrap(livro).assign(listaLivrosDto);
     await this.em.flush();
     return livro;
   }

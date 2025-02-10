@@ -1,7 +1,7 @@
 import { IsEmail, IsInt, IsNotEmpty, MinLength } from 'class-validator';
 
 export class CriaUsuarioDto {
-  @IsInt({ message: 'O id deve ser um número' })
+  @IsInt({ message: 'O id deve ser um número inteiro' })
   id!: number;
   @IsNotEmpty({ message: 'O nome não pode ser vazio' })
   nome!: string;

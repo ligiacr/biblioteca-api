@@ -1,12 +1,12 @@
 import { EntityManager, wrap } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
-import { CriaUsuarioDto } from 'src/dto/cria-usuario.dto';
-import { ListaUsuariosDto } from 'src/dto/lista-usuarios.dto';
-import { Usuario } from 'src/entities/usuario.entity';
-import { BadRequestException } from 'src/exceptions/bad-request.exception';
-import { NotFoundException } from 'src/exceptions/not-found.exception';
-import { UsuarioRepository } from 'src/repositories/usuario.repository';
+import { CriaUsuarioDto } from '../dto/cria-usuario.dto';
+import { ListaUsuariosDto } from '../dto/lista-usuarios.dto';
+import { Usuario } from '../entities/usuario.entity';
+import { BadRequestException } from '../exceptions/bad-request.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
+import { UsuarioRepository } from '../repositories/usuario.repository';
 
 @Injectable()
 export class UsuarioService {
@@ -51,12 +51,12 @@ export class UsuarioService {
     return usuario;
   }
 
-  async atualizaUsuario(id: number, criaUsuarioDto: CriaUsuarioDto) {
+  async atualizaUsuario(id: number, listaUsuariosDto: ListaUsuariosDto) {
     const usuario = await this.usuarioRepository.findOne(id);
     if (!usuario) {
       throw new NotFoundException();
     }
-    wrap(usuario).assign(criaUsuarioDto);
+    wrap(usuario).assign(listaUsuariosDto);
     await this.em.flush();
     return usuario;
   }

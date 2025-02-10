@@ -3,7 +3,7 @@ import { IsInt, IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
 import { Usuario } from 'src/entities/usuario.entity';
 
 export class CriaLivroDto {
-  @IsInt()
+  @IsInt({ message: 'O id deve ser um número inteiro' })
   id!: number;
   @IsNotEmpty({ message: 'O titulo não pode ser vazio' })
   titulo!: string;

@@ -8,8 +8,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CriaUsuarioDto } from 'src/dto/cria-usuario.dto';
-import { UsuarioService } from 'src/services/usuario.service';
+import { CriaUsuarioDto } from '../dto/cria-usuario.dto';
+import { ListaUsuariosDto } from '../dto/lista-usuarios.dto';
+import { UsuarioService } from '../services/usuario.service';
 
 @Controller('usuarios')
 export class UsuarioController {
@@ -33,9 +34,9 @@ export class UsuarioController {
   @Put(':id')
   async atualizaUsuario(
     @Param('id', ParseIntPipe) id: number,
-    @Body() criaUsuarioDto: CriaUsuarioDto,
+    @Body() listaUsuariosDto: ListaUsuariosDto,
   ) {
-    return this.usuarioService.atualizaUsuario(id, criaUsuarioDto);
+    return this.usuarioService.atualizaUsuario(id, listaUsuariosDto);
   }
 
   @Delete(':id')
