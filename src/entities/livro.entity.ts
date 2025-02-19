@@ -1,17 +1,17 @@
 import {
   Collection,
   Entity,
+  EntityRepository,
   EntityRepositoryType,
   ManyToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/postgresql';
-import { LivroRepository } from '../repositories/livro.repository';
 import { Usuario } from './usuario.entity';
 
-@Entity({ repository: () => LivroRepository })
+@Entity({ repository: () => EntityRepository<Livro> })
 export class Livro {
-  [EntityRepositoryType]?: LivroRepository;
+  [EntityRepositoryType]?: EntityRepository<Livro>;
 
   @PrimaryKey()
   id!: number;

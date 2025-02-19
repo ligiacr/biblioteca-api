@@ -1,29 +1,39 @@
 import { CriaLivroDto } from './../dto/cria-livro.dto';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityManager, wrap } from '@mikro-orm/postgresql';
+import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { ListaLivrosDto } from '../dto/lista-livros.dto';
 import { Livro } from '../entities/livro.entity';
 import { BadRequestException } from '../exceptions/bad-request.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';
-import { LivroRepository } from '../repositories/livro.repository';
-import { UsuarioRepository } from '../repositories/usuario.repository';
 import { Usuario } from '../entities/usuario.entity';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { Logger } from 'nestjs-pino';
+
+@Injectable()
+export class UsuarioService {}
 
 @Injectable()
 export class LivroService {
   constructor(
     @InjectRepository(Livro)
-    private livroRepository: LivroRepository,
+    private readonly livroRepository: EntityRepository<Livro>,
     @InjectRepository(Usuario)
-    private usuarioRepository: UsuarioRepository,
-    private em: EntityManager,
+    private readonly usuarioRepository: EntityRepository<Usuario>,
+    private readonly em: EntityManager,
+    private readonly logger: Logger,
   ) {}
 
   async criaLivro(criaLivroDto: CriaLivroDto): Promise<Livro | null> {
     const livro = new Livro();
 
-    wrap(livro).assign(criaLivroDto);
+    livro.id = criaLivroDto.id;
+    livro.titulo = criaLivroDto.titulo;
+    livro.autor = criaLivroDto.autor;
+    livro.anoPublicacao = criaLivroDto.anoPublicacao;
+    livro.disponivel = criaLivroDto.disponivel;
+    livro.estoque = criaLivroDto.estoque;
+    livro.usuarios = criaLivroDto.usuarios;
+
     const existe = (await this.livroRepository.findAll()).filter(
       (livro) => livro.id === criaLivroDto.id,
     );
@@ -50,16 +60,20 @@ export class LivroService {
           usuarios: livro.usuarios,
         },
       ]);
+      this.logger.log('Trazendo lista de livros...');
       await Promise.all(livros.map((livro) => livro.usuarios.init()));
       return lista;
     }
+    this.logger.warn('Nenhum livro encontrado!');
     throw new NotFoundException();
   }
 
   async buscaLivroPorId(id: number): Promise<Livro | null> {
+    this.logger.log(`Buscando livro com id ${id}...`);
     const livro = await this.livroRepository.findOne(id);
 
     if (!livro) {
+      this.logger.warn('Livro nao encontrado!');
       throw new NotFoundException();
     }
     return livro;

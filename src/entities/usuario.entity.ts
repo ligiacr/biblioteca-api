@@ -4,11 +4,11 @@ import {
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
-import { UsuarioRepository } from '../repositories/usuario.repository';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
-@Entity({ repository: () => UsuarioRepository })
+@Entity({ repository: () => EntityRepository<Usuario> })
 export class Usuario {
-  [EntityRepositoryType]?: UsuarioRepository;
+  [EntityRepositoryType]?: EntityRepository<Usuario>;
 
   @PrimaryKey()
   id!: number;
@@ -18,4 +18,11 @@ export class Usuario {
   email!: string;
   @Property()
   telefone!: string;
+
+  constructor(usuario?: Partial<Usuario>) {
+    this.id = usuario?.id ?? 0;
+    this.nome = usuario?.nome ?? '';
+    this.email = usuario?.email ?? '';
+    this.telefone = usuario?.telefone ?? '';
+  }
 }

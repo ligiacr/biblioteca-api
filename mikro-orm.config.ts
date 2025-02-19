@@ -13,6 +13,7 @@ export default defineConfig({
   allowGlobalContext: true,
   entities: ['./dist/entities'],
   entitiesTs: ['./src/entities'],
+  tsNode: true,
   migrations: {
     path: path.resolve(__dirname, './src/migrations'),
     tableName: 'mikro_orm_migrations',

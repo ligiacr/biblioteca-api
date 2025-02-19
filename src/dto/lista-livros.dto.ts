@@ -20,4 +20,13 @@ export class ListaLivrosDto {
   estoque!: number;
   @IsOptional()
   usuarios = new Collection<Usuario>(this);
+
+  constructor(livro?: Partial<ListaLivrosDto>) {
+    this.titulo = livro?.titulo ?? '';
+    this.autor = livro?.autor ?? '';
+    this.anoPublicacao = livro?.anoPublicacao ?? 0;
+    this.disponivel = livro?.disponivel ?? true;
+    this.estoque = livro?.estoque ?? 0;
+    this.usuarios = livro?.usuarios ?? new Collection<Usuario>(this);
+  }
 }

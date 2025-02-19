@@ -3,17 +3,38 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Livro } from './entities/livro.entity';
 import { LivroService } from './services/livro.service';
 import { LivroController } from './controllers/livro.controller';
-import { LivroRepository } from './repositories/livro.repository';
 import { Usuario } from './entities/usuario.entity';
 import { UsuarioService } from './services/usuario.service';
 import { UsuarioController } from './controllers/usuario.controller';
-import { UsuarioRepository } from './repositories/usuario.repository';
+import { LoggerModule } from 'nestjs-pino';
 
 @Global()
 @Module({
-  imports: [MikroOrmModule.forFeature([Livro, Usuario])],
-  providers: [LivroService, LivroRepository, UsuarioService, UsuarioRepository],
+  imports: [
+    MikroOrmModule.forFeature([Livro, Usuario]),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            messageKey: 'message',
+          },
+        },
+        messageKey: 'message',
+        autoLogging: false,
+        serializers: {
+          req: () => {
+            return undefined;
+          },
+          res: () => {
+            return undefined;
+          },
+        },
+      },
+    }),
+  ],
+  providers: [LivroService, UsuarioService],
   controllers: [LivroController, UsuarioController],
-  exports: [LivroService, LivroRepository, UsuarioService, UsuarioRepository],
+  exports: [LivroService, UsuarioService],
 })
 export class BibliotecaModule {}
