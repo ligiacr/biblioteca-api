@@ -2,14 +2,15 @@ import { defineConfig } from '@mikro-orm/core';
 import { TSMigrationGenerator } from '@mikro-orm/migrations';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import * as path from 'path';
+import 'dotenv/config';
 
 export default defineConfig({
   port: 5432,
-  user: 'postgres',
+  user: process.env['DB_USER']!,
+  password: process.env['DB_PASSWORD']!,
   host: 'localhost',
-  dbName: 'postgres',
+  dbName: process.env['DB_NAME']!,
   driver: PostgreSqlDriver,
-  password: '123456',
   allowGlobalContext: true,
   entities: ['./dist/entities'],
   entitiesTs: ['./src/entities'],

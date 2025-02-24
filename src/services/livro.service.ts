@@ -9,6 +9,7 @@ import { Usuario } from '../entities/usuario.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import winston from 'winston';
 const { combine, timestamp, json, prettyPrint } = winston.format;
+import { PostgresTransport } from '@innova2/winston-pg';
 
 @Injectable()
 export class UsuarioService {}
@@ -25,8 +26,21 @@ export class LivroService {
 
   logger: winston.Logger = winston.createLogger({
     level: 'info' as string,
-    format: combine(timestamp(), json(), prettyPrint()),
-    transports: new winston.transports.Console(),
+    format: combine(
+      timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
+      json(),
+      prettyPrint(),
+    ),
+    defaultMeta: { service: 'livro-service' },
+    transports: [
+      new winston.transports.Console(),
+      new PostgresTransport({
+        connectionString: 'postgres://postgres:123456@localhost:5432/postgres',
+        maxPool: 10,
+        level: 'info',
+        tableName: 'logs',
+      }),
+    ],
   });
 
   async criaLivro(criaLivroDto: CriaLivroDto): Promise<Livro | null> {
